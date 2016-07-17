@@ -14,20 +14,20 @@ There is also the option to broadcast messages to all the users(called conferenc
 ##Screen Shots
 For the sake of convenience both admin and client module were run on the same machine in the screen shots below
 
-*1 Basic front end view of both admin(left hand side) and client(right hand side) modules.
+* 1 Basic front end view of both admin(left hand side) and client(right hand side) modules.
 ![](ScreenShots/scr1.jpg)
 
-*2 Adminstrator can create users by assigning username and password.
+* 2 Adminstrator can create users by assigning username and password.
 ![](ScreenShots/scr2.jpg)
 
-*3 Users can connect to the server using the usernames and passwords provided by the administrator and will be able to communicate with other clients and also the administrator over the network.
+* 3 Users can connect to the server using the usernames and passwords provided by the administrator and will be able to communicate with other clients and also the administrator over the network.
 ![](ScreenShots/scr3.jpg)
 
-*4 The administrator will be able to track all the users who have connected to the network or disconnected from the network. He/she also has the auhtority to disconnect a user if and when needed. The administrator also has a "log chats" option to save and monitor all the chats over the network.
+* 4 The administrator will be able to track all the users who have connected to the network or disconnected from the network. He/she also has the auhtority to disconnect a user if and when needed. The administrator also has a "log chats" option to save and monitor all the chats over the network.
 ![](ScreenShots/scr4.jpg)
 
-*5 The administrator can also launch an Admin Client to send/receive messages from other clients. This Admin Clients works in the same way as any other client and will be opened in a separate window.
+* 5 The administrator can also launch an Admin Client to send/receive messages from other clients. This Admin Clients works in the same way as any other client and will be opened in a separate window.
 ![](ScreenShots/scr5.jpg)
 
-*6 The client can see the list of users who are currently available on the network and send private messages to anyone of them. These messaged can be seen in the "Conference Text" part of the window.
+* 6 The client can see the list of users who are currently available on the network and send private messages to anyone of them. These messaged can be seen in the "Conference Text" part of the window.
 ![](ScreenShots/scr6.jpg)
