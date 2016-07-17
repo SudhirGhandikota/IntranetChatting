@@ -1,0 +1,37 @@
+class OrbitClientTickler
+    extends Thread
+{
+    // This class just runs as a separate thread, pinging the client
+    // every second to make sure we haven't lost the connection
+     
+    OwnClientSocket client;
+ 
+    public OrbitClientTickler(OwnClientSocket c)
+    {
+	super("Orbit Chat client connection tickler");
+ 
+	client = c;
+ 
+	start();
+    }
+ 
+    public void run()
+    {
+	while(!client.stop)
+	    {
+		try {
+		    client.sendPing();
+		}
+		catch (IOException e) {
+		    if (!client.stop)
+			client.server.disconnect(client, false);
+		    break;
+		}
+ 
+		try {
+		    sleep (1000);
+		}
+		catch (InterruptedException e) {}
+	    }
+    }
+}

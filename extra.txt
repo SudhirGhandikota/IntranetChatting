@@ -1,0 +1,124 @@
+protected void receiveLeaveMess()
+	throws IOException
+    {
+	String whofor = "";
+	String message = "";
+
+	// Our client wants to leave a message for another user.  First, read
+	// our own user ID and discard it.  Then, read the name of the
+	// recipient followed by the message text.
+	istream.readInt();
+	whofor = istream.readUTF();
+	message = istream.readUTF();
+
+	// Add it to the list of messages
+	server.messages.addElement(new OwnMessage(whofor, user.name, 
+							message));
+    }
+
+    protected void receiveReadMess()
+	throws IOException
+    {
+	// The client is requesting his messages
+
+	OwnMessage m;
+
+	// Read the sender user id (ours) and discard it.
+	istream.readInt();
+
+	// Now send all of the user's stored messages
+	sendStoredMess();
+    }
+
+    protected void sendStoredMess()
+	throws IOException
+    {
+	// This will send all of the messages that are being stored for
+	// this user
+	short numberMessages = 0;
+	OwnMessage message;
+
+	// Figure out how many messages are for this user.
+	for (int count = 0; count < server.messages.size(); count ++)
+	    if (((OwnMessage) server.messages.elementAt(count))
+		.messageFor.equals(user.name))
+		numberMessages++;
+
+	synchronized (ostream)
+	    {
+		ostream.writeShort(OrbitCommand.STOREDMESS);
+		ostream.writeShort(numberMessages);
+
+		// Now send all of the messages themselved
+		for (int count = 0; count < server.messages.size(); count ++)
+		    {
+			message =
+			    (OrbitMessage) server.messages.elementAt(count);
+
+			if (message.messageFor.equals(user.name))
+			    {
+				// Send the message to the client
+				ostream.writeUTF(message.messageFrom);
+				ostream.writeUTF(message.text);
+			
+				server.messages.removeElement(message);
+				count -= 1;
+			    }
+		    }
+	    }
+    }
+
+    protected void sendError(int fromid, short errorCode)
+	throws IOException
+    {
+	// This will send an error notice from another client to ours.
+	synchronized (ostream)
+	    {
+		ostream.writeShort(OrbitCommand.ERROR);
+		ostream.writeInt(fromid);
+		ostream.writeShort(errorCode);
+		ostream.writeInt(0); // Empty recipient list
+	    }
+    }
+
+    protected void receiveError()
+	throws IOException
+    {
+	// This will receive an error message from our client and forward
+	// it to the appropriate user(s)
+
+	int numRecipients = 0;
+	short errorCode = 0;
+	OrbitClientSocket toUser;
+
+	// Read the sender user id (ours) and discard it.
+	istream.readInt();
+	errorCode = istream.readShort();
+	numRecipients = istream.readInt();
+
+	// Is this a public action?  If so, send it to everyone in the
+	// current chat room
+	if (numRecipients == 0)
+	    {
+		for (int count = 0; count < chatRoom.clients.size(); count ++)
+		    {
+			toUser = (OrbitClientSocket)
+			    chatRoom.clients.elementAt(count);
+			if (toUser != this)
+			    toUser.sendError(user.id, errorCode);
+		    }
+	    }
+	else
+	    {
+		// Loop for each of the intended recipients
+		for (int count = 0; count < numRecipients; count ++)
+		    {
+			toUser = findClientSocket(istream.readInt());
+		
+			if (toUser != null)
+			    if (toUser != this)
+				// Send it out to this recipient
+				toUser.sendError(user.id, errorCode);
+		    }
+	    }
+    }
